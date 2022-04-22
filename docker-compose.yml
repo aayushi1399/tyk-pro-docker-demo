@@ -13,6 +13,15 @@ services:
     networks:
       - tyk
 
+  bundle-server:
+    image: danjellz/http-server
+    ports:
+    - "8000:8080"
+    volumes:
+      - ./:/public
+    networks:
+      - tyk
+
   tyk-gateway:
     image: tykio/tyk-gateway:v4.0.0
     container_name: tyk-gateway

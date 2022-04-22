@@ -45,3 +45,50 @@ PostgreSQL:
 ```
 $ docker-compose -f ./docker-compose.yml -f ./docker-compose.postgres.yml down -v
 ```
+
+## Python Starter
+
+1. Modify the plugin if you want: `middleware.py`
+
+2. zip the contents of the folder to the folder:
+```
+$ zip -r bundle_v1.zip manifest.json middleware.py
+```
+
+This creates a bundle file called "bundle_v1.zip".  This allows the Gateway to download it from a server.
+
+
+3. Import `apidefinitionexample.json` or Create an API and add this to the RAW API Definition:
+```
+"custom_middleware_bundle": "bundle_v1.zip",
+```
+
+Your Gateway will now download `bundle_v1.zip` bundle now from the bundle HTTP server
+
+
+4. Curl to test:
+
+``` 
+$ curl localhost:8080/httpbin/get
+{
+  "args": {}, 
+  "headers": {
+    "Accept": "*/*", 
+    "Accept-Encoding": "gzip", 
+    "Cache-Control": "max-age=259200", 
+    "Host": "httpbin.org", 
+    "If-Modified-Since": "Fri, 22 Apr 2022 15:31:30 GMT", 
+    "Testheader": "testvalue", 
+    "User-Agent": "curl/7.77.0", 
+    "X-Amzn-Trace-Id": "Root=1-6262d0e5-05a874fb7737630c7d0bf5bd"
+  }, 
+  "origin": "172.25.0.1, 172.19.131.107, 10.82.56.107, 199.167.24.148", 
+  "url": "http://httpbin.org/get"
+}
+
+```
+
+Our header has been injected by the plugin.
+
+
+5. Before you make another update, you must increment or change the name of `bundle_xyz.zip` so that the Gateway won't use the plugin in the local cache.
