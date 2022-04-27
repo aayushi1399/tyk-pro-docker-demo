@@ -1,0 +1,141 @@
+version: '3.9'
+services:
+  tyk-redis-cluster-region-a-master-0:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-a-master-0
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_CLUSTER_REPLICAS=1
+      - REDIS_CLUSTER_CREATOR=yes
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data-master-0:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-a-master-1:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-a-master-1
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-master-1:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-b-master-2:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-b-master-2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-master-2:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-b-master-3:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-b-master-3
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-master-3:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-a-replica-0:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-a-replica-0
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-replica-0:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-a-replica-1:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-a-replica-1
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-replica-1:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-b-replica-2:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-b-replica-2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-replica-2:/bitnami
+    networks:
+      - tyk
+    restart: always
+
+  tyk-redis-cluster-region-b-replica-3:
+    image: bitnami/redis-cluster:latest
+    container_name: tyk-redis-cluster-region-b-replica-3
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes 
+      - REDIS_NODES=tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3
+    volumes:
+      - redis-data-replica-3:/bitnami
+    networks:
+      - tyk
+    restart: always
+      
+  tyk-postgres:
+    image: postgres:latest
+    container_name: tyk-postgres
+    environment:
+      - POSTGRES_DB=tyk_analytics
+      - POSTGRES_USER=default
+      - POSTGRES_PASSWORD=topsecretpassword
+    volumes:
+      - db-data:/data/db
+    networks:
+      - tyk
+
+  tyk-pump:
+    image: tykio/tyk-pump-docker-pub:v1.5.1
+    container_name: tyk-pump
+    env_file:
+      - ./confs/pump.env
+      - ./confs/pump.postgres.env
+    environment:
+      - TYK_PMP_ANALYTICSSTORAGECONFIG_ADDRS=tyk-redis-cluster-region-a-master-0:6379,tyk-redis-cluster-region-a-master-1:6379,tyk-redis-cluster-region-b-master-2:6379,tyk-redis-cluster-region-b-master-3:6379,tyk-redis-cluster-region-a-replica-0:6379,tyk-redis-cluster-region-a-replica-1:6379,tyk-redis-cluster-region-b-replica-2:6379,tyk-redis-cluster-region-b-replica-3
+      - TYK_PMP_ANALYTICSSTORAGECONFIG_ENABLECLUSTER=true
+    networks:
+      - tyk
+    restart: always
+
+volumes:
+  redis-data-master-0:
+  redis-data-master-1:
+  redis-data-master-2:
+  redis-data-master-3:
+  redis-data-replica-0:
+  redis-data-replica-1:
+  redis-data-replica-2:
+  redis-data-replica-3:
+  db-data:
+
+networks:
+  tyk:
+    name: tyk

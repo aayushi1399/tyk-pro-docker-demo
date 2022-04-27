@@ -1,0 +1,61 @@
+version: '3.9'
+services:
+  tyk-redis-region-b-hybrid-0:
+    image: redis
+    container_name: tyk-redis-region-b-hybrid-0
+    networks:
+      - tyk
+      
+  tyk-redis-region-b-hybrid-1:
+    image: redis
+    container_name: tyk-redis-region-b-hybrid-1
+    networks:
+      - tyk
+
+  tyk-gateway-region-b-hybrid-0:
+    image: tykio/tyk-gateway:v4.1.0-rc10
+    container_name: tyk-gateway-region-b-hybrid-0
+    ports:
+      - "8091:8091"
+    env_file:
+      - ./confs/tyk.env
+    environment:
+      - TYK_GW_LISTENPORT=8091
+      - TYK_GW_POLICIES_POLICYSOURCE=rpc
+      - TYK_GW_USEDBAPPCONFIGS=false
+      - TYK_GW_STORAGE_ADDRS=tyk-redis-region-b-hybrid-0:6379
+      - TYK_GW_ANALYTICSCONFIG_TYPE=rpc
+      - TYK_GW_SLAVEOPTIONS_USERPC=true
+      - TYK_GW_SLAVEOPTIONS_CONNECTIONSTRING=tyk-mdcb-region-b:9000
+      - TYK_GW_SLAVEOPTIONS_RPCKEY=${TYK_GW_SLAVEOPTIONS_RPCKEY}
+      - TYK_GW_SLAVEOPTIONS_APIKEY=${TYK_GW_SLAVEOPTIONS_APIKEY}
+      - TYK_GW_SLAVEOPTIONS_GROUPID=regoin-b-hybrid-0
+      - TYK_GW_AUTHOVERRIDE_SESSIONPROVIDER_STORAGEENGINE=rpc
+    networks:
+      - tyk
+
+  tyk-gateway-region-b-hybrid-1:
+    image: tykio/tyk-gateway:v4.1.0-rc10
+    container_name: tyk-gateway-region-b-hybrid-1
+    ports:
+      - "8092:8092"
+    env_file:
+      - ./confs/tyk.env
+    environment:
+      - TYK_GW_LISTENPORT=8092
+      - TYK_GW_POLICIES_POLICYSOURCE=rpc
+      - TYK_GW_USEDBAPPCONFIGS=false
+      - TYK_GW_STORAGE_ADDRS=tyk-redis-region-b-hybrid-1:6379
+      - TYK_GW_ANALYTICSCONFIG_TYPE=rpc
+      - TYK_GW_SLAVEOPTIONS_USERPC=true
+      - TYK_GW_SLAVEOPTIONS_CONNECTIONSTRING=tyk-mdcb-region-b:9000
+      - TYK_GW_SLAVEOPTIONS_RPCKEY=${TYK_GW_SLAVEOPTIONS_RPCKEY}
+      - TYK_GW_SLAVEOPTIONS_APIKEY=${TYK_GW_SLAVEOPTIONS_APIKEY}
+      - TYK_GW_SLAVEOPTIONS_GROUPID=regoin-b-hybrid-1
+      - TYK_GW_AUTHOVERRIDE_SESSIONPROVIDER_STORAGEENGINE=rpc
+    networks:
+      - tyk
+
+networks:
+  tyk:
+    external: true 
