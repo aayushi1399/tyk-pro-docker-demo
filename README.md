@@ -1,47 +1,58 @@
-# Tyk Pro Demo using Docker
+# Getting started with Active-Active 
 
-This compose file is designed to provide a quick, simple demo of the Tyk stack, this includes Tyk Gateway, Tyk Dashboard, Tyk Portal, Mongo, & Redis.
+Create .env file
 
-This repo great for proof of concept and demo purpose, but if you want test performance, you need to move each component to separate machine, following our documentation https://tyk.io/docs/.
+`cp .env.example .env`
 
-## Step 1: Add your dashboard license
+Run the following commands to start DBs, Pump, and Control Plane A
 
-Create `.env` file `cp .env.example .env`. Then add your license string to `TYK_DB_LICENSEKEY`.
-
-## Step 2: Initialise the Docker containers
-
-Run docker compose:
-
-With a `Mongo` database:
 ```
-$ docker-compose up
+docker-compose -f docker-compose.dbs.yml up tyk-redis-cluster-region-a-master-0 tyk-redis-cluster-region-a-master-1 tyk-redis-cluster-region-b-master-2 tyk-redis-cluster-region-b-master-3 tyk-redis-cluster-region-a-replica-0 tyk-redis-cluster-region-a-replica-1 tyk-redis-cluster-region-b-replica-2 tyk-redis-cluster-region-b-replica-3 tyk-postgres tyk-pump
+docker-compose -f docker-compose.cp.a.yml up tyk-dashboard-region-a tyk-gateway-region-a tyk-mdcb-region-a
 ```
 
-With a `PostgreSQL` database:
+Navigate to `http://localhost:3000` to bootstrap your dashboard. 
+
+Run the following commands to enable hybrid on your org. 
+
 ```
-$ docker-compose -f ./docker-compose.yml -f ./docker-compose.postgres.yml up
-```
-
-Please note that this command may take a while to complete, as Docker needs to download and provision all of the containers.
-
-This will run in non-daemonised mode so you can see all the output.
-
-## Step 3: Bootstrap the Tyk installation
-
-Bootstrap the instance:
-
-Open your browser to http://localhost:3000.  You will be presented with the Bootstrap UI to create your first organisation and admin user.
-
-## Tear down
-
-To delete all containers as well as remove all volumes from your host:
-
-Mongo:
-```
-$ docker-compose down -v
+export DASH_ADMIN_SECRET=12345
+export DASH_URL=http://localhost:3000
+export ORG_ID=
+curl $DASH_URL/admin/organisations/$ORG_ID -H "Admin-Auth: $DASH_ADMIN_SECRET" | python3 -mjson.tool > myorg.json
 ```
 
-PostgreSQL:
+Replace the following section in the `myorg.json`
+
 ```
-$ docker-compose -f ./docker-compose.yml -f ./docker-compose.postgres.yml down -v
+  "hybrid_enabled": false,
+  "event_options": {},
+```
+
+With
+
+```
+  "hybrid_enabled": true,
+  "event_options": {
+    "key_event": {
+      "email": "test@test.com"
+    },
+    "hashed_key_event": {
+      "email": "test@test.com"
+    }
+  },
+```
+
+Finally push the modified org object.
+
+`curl -X PUT $DASH_URL/admin/organisations/$ORG_ID -H "Admin-Auth: $DASH_ADMIN_SECRET" -d @myorg.json`
+
+Modify .env and add the `TYK_GW_SLAVEOPTIONS_RPCKEY` and `TYK_GW_SLAVEOPTIONS_APIKEY` values.
+
+Finally, run the following commands to start up your Hybrid A Gateway, Control Plane B, and Hybrid B Gateway
+
+```
+docker-compose -f docker-compose.hybrid.a.yml up tyk-redis-region-a-hybrid-0 tyk-gateway-region-a-hybrid-0
+docker-compose -f docker-compose.cp.b.yml up tyk-dashboard-region-b tyk-gateway-region-b tyk-mdcb-region-b
+docker-compose -f docker-compose.hybrid.b.yml up tyk-redis-region-b-hybrid-0 tyk-redis-region-b-hybrid-1 tyk-gateway-region-b-hybrid-0 tyk-gateway-region-b-hybrid-1
 ```
