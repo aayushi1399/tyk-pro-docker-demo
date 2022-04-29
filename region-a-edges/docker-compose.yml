@@ -12,7 +12,7 @@ services:
     ports:
       - "8081:8081"
     env_file:
-      - ./confs/tyk.env
+      - ../confs/tyk.env
     environment:
       - TYK_GW_LISTENPORT=8081
       - TYK_GW_POLICIES_POLICYSOURCE=rpc

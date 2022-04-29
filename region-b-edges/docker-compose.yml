@@ -18,7 +18,7 @@ services:
     ports:
       - "8091:8091"
     env_file:
-      - ./confs/tyk.env
+      - ../confs/tyk.env
     environment:
       - TYK_GW_LISTENPORT=8091
       - TYK_GW_POLICIES_POLICYSOURCE=rpc
@@ -40,7 +40,7 @@ services:
     ports:
       - "8092:8092"
     env_file:
-      - ./confs/tyk.env
+      - ../confs/tyk.env
     environment:
       - TYK_GW_LISTENPORT=8092
       - TYK_GW_POLICIES_POLICYSOURCE=rpc

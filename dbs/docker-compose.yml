@@ -107,6 +107,8 @@ services:
       - POSTGRES_DB=tyk_analytics
       - POSTGRES_USER=default
       - POSTGRES_PASSWORD=topsecretpassword
+    ports:
+      - "5432:5432"
     volumes:
       - db-data:/data/db
     networks:
@@ -116,8 +118,8 @@ services:
     image: tykio/tyk-pump-docker-pub:v1.5.1
     container_name: tyk-pump
     env_file:
-      - ./confs/pump.env
-      - ./confs/pump.postgres.env
+      - ../confs/pump.env
+      - ../confs/pump.postgres.env
     environment:
       - TYK_PMP_ANALYTICSSTORAGECONFIG_ADDRS=tyk-redis-cluster-region-a-master-0:6379,tyk-redis-cluster-region-a-master-1:6379,tyk-redis-cluster-region-b-master-2:6379,tyk-redis-cluster-region-b-master-3:6379,tyk-redis-cluster-region-a-replica-0:6379,tyk-redis-cluster-region-a-replica-1:6379,tyk-redis-cluster-region-b-replica-2:6379,tyk-redis-cluster-region-b-replica-3
       - TYK_PMP_ANALYTICSSTORAGECONFIG_ENABLECLUSTER=true
