@@ -21,5 +21,5 @@ docker-compose -f region-b-edges/docker-compose.yml --env-file .env up
 
 Now you should be able to access the dashboard at [http://localhost:3000](http://localhost:3000) user credintials:
 
-Username: user@exmaple.com
+Username: user@example.com<br />
 Password: topsecretpassword
