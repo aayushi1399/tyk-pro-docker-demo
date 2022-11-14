@@ -4,8 +4,9 @@ services:
     image: tykio/tyk-dashboard:v4.2.3
     container_name: tyk-dashboard
     environment:
-      - TYK_DB_LICENSEKEY=${TYK_DB_LICENSEKEY}
-      - TYK_DB_STORAGE_MAIN_TYPE=mongo
+      - TYK_DB_LICENSEKEY=
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmQ3ZjdkMGEtNTgzOC00M2EzLTUwM2MtZGQ2NDRmMjNkODc2LDI2NmUyMWRlLTFjZjctNGIxNS02YzFhLTJlODQxNDI3NWU2ZSw2NWY5NTI3My0yZDAzLTRiM2UtNTA4Zi0xZjZhMWE5NmU2NjUsZGZlZDNmZjgtNzU5NC00MDEyLTViMWItMTRkZmUwNDk4ZjUwLDNkNTNhMDIwLTA5MzQtNDhhYy02NGQ3LWFiODZlN2VjYzEzMyIsImV4cCI6MTY2OTM1MDkyOSwiaWF0IjoxNjY4MTQxMzI5LCJvd25lciI6IjYzNmRkMTExOGRiZTY2MDAwMWRlNTVmNCIsInNjb3BlIjoidHJhY2sscmJhYyxtdWx0aV90ZWFtLHVkZyxncmFwaCxmZWRlcmF0aW9uIiwidiI6IjIifQ.zDe0JfRYvx5SBoW3VaBXntOiVP0oEIx91KzO24FPP7PEQZxBIC7_EyWsogJTq-EVW13YgXvwBF2dV781XX2-p4U38BgggoA0gx5C1OFX3LblHsJPw3uFKKRXQCAawhmHm_f9DsAV1wA0Az7OlXp3UzbQO0PjlqfqWrLV0mToo_Gz8wI_-b62FR6NVXs9Sp-4JA7wRyCLf1KUAuHMhKCbhlRCbVALXCPUKWlDk4YuPnFXD1kCpqS7JCA1SBPOUL5Z-8oaYiQbatjpkxAWWzhnL77deQioD6ib9nJ0jG6MVlcy6FxhiS_DeJXMIN93GmpOXlMBMcsdC7iaAjl-OAUChQ
+      - TYK_DB_STORAGE_MAIN_TYPE=postgres
       - TYK_DB_STORAGE_MAIN_CONNECTIONSTRING=mongodb://tyk-mongo:27017/tyk_analytics
     ports:
       - "3000:3000"
@@ -33,33 +34,4 @@ services:
     networks:
       - tyk
 
-  tyk-redis:
-    image: redis
-    container_name: tyk-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - tyk
-      
-  tyk-mongo:
-    image: mongo:4.0
-    container_name: tyk-mongo
-
-    command: ["mongod", "--smallfiles"]
-    ports:
-      - "27017:27017"
-
-    volumes:
-      - db-data:/data/db
-
-    networks:
-      - tyk
-
-volumes:
-  redis-data:
-  db-data:
-
-networks:
-  tyk:
+ 
